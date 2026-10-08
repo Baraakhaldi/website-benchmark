@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>UI Resource Directory</title>
+<!-- TEMPLATE: replace every {{PLACEHOLDER}}. Duplicate repeated blocks (rows, issues, tiers, phases). Keep the :root tokens and both dark-mode blocks. Publish as an artifact (no doctype) or export with scripts/export_standalone.py. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: header + filter bar, then a two-column grid of resource cards; each card lists what the site provides and copyable dev/AI hooks */
+:root{
+  --bg:#f5f6f8; --surface:#fff; --ink:#151d27; --muted:#5b6674; --line:#dde2e8;
+  --accent:#0f5f74; --accent-soft:#e2eff2; --code:#eef1f4;
+  --top:#a15c00; --top-soft:#fdf0dc; --ok:#1e7a46; --ok-soft:#e2f3e9;
+  --display:"Sora",ui-sans-serif,system-ui,sans-serif;
+  --body:"Source Sans 3",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f151c; --surface:#17202a; --ink:#e6ebf0; --muted:#9ba8b6; --line:#293441;
+  --accent:#5cc3d9; --accent-soft:#15313a; --code:#0f171f; --top:#f2b45c; --top-soft:#382a14; --ok:#6fd39b; --ok-soft:#153223; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f151c; --surface:#17202a; --ink:#e6ebf0; --muted:#9ba8b6; --line:#293441;
+  --accent:#5cc3d9; --accent-soft:#15313a; --code:#0f171f; --top:#f2b45c; --top-soft:#382a14; --ok:#6fd39b; --ok-soft:#153223; color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.55 var(--body);padding-inline:20px;padding-block:0 72px}
+.wrap{max-width:1180px;margin:0 auto}
+h1,h2,h3{font-family:var(--display);line-height:1.2;margin:0;text-wrap:balance}
+h1{font-size:clamp(28px,4.4vw,40px);letter-spacing:-.02em}
+h2{font-size:22px;margin-top:44px}
+h3{font-size:19px}
+p{margin:0}
+a{color:var(--accent)}
+.eyebrow{font:600 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+header.top{padding-block:48px 8px;display:grid;gap:12px}
+.lede{font-size:18px;color:var(--muted);max-width:72ch}
+.legend{display:flex;flex-wrap:wrap;gap:10px;font-size:14px;color:var(--muted)}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:12px;margin-top:20px;border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.bar button{font:600 14px var(--body);color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:99px;padding:7px 13px;cursor:pointer}
+.bar button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.bar button:focus-visible,.copy:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.bar input{flex:1 1 180px;min-width:0;font:400 15px var(--body);padding:8px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,520px),1fr));gap:16px;margin-top:16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px 22px;display:grid;gap:12px;align-content:start;min-width:0}
+.card.top{border-color:var(--top)}
+.card header{display:grid;gap:6px}
+.title{display:flex;flex-wrap:wrap;gap:8px;align-items:baseline}
+.title a{text-decoration:none;color:var(--ink)} .title a:hover{color:var(--accent)}
+.url{font:400 13px var(--mono);color:var(--muted);overflow-wrap:anywhere}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font:600 11px/1 var(--mono);letter-spacing:.05em;text-transform:uppercase;padding:5px 7px;border-radius:4px;background:var(--code);color:var(--muted)}
+.tag.topt{background:var(--top-soft);color:var(--top)}
+.tag.ai{background:var(--ok-soft);color:var(--ok)}
+.card ul{margin:0;padding-left:18px} .card li+li{margin-top:4px}
+.best{font-size:15px;background:var(--accent-soft);border-radius:6px;padding:9px 12px}
+.best b{font-weight:700}
+.meta{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:14px}
+.meta dt{color:var(--muted);font-weight:600}
+.meta dd{margin:0;min-width:0}
+.hooks{display:grid;gap:8px;border-top:1px dashed var(--line);padding-top:12px}
+.hooks .lbl{font:600 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.hook{display:grid;grid-template-columns:110px minmax(0,1fr) auto;gap:10px;align-items:center}
+.hook span.k{font-size:13px;font-weight:600;color:var(--muted)}
+.hook code{font:400 13px/1.4 var(--mono);background:var(--code);padding:7px 9px;border-radius:6px;overflow-x:auto;white-space:nowrap;display:block}
+.copy{font:600 12px var(--body);border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:6px;padding:6px 10px;cursor:pointer;white-space:nowrap}
+.copy.done{background:var(--ok-soft);color:var(--ok);border-color:var(--ok)}
+.note{font-size:13px;color:var(--muted)}
+.excluded{margin-top:14px;background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+th,td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:600 12px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+tr:last-child td{border-bottom:0}
+.empty{color:var(--muted);margin-top:16px}
+@media (max-width:560px){body{padding-inline:16px}.hook{grid-template-columns:1fr auto}.hook span.k{grid-column:1/-1}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+  <span class="eyebrow">Front-end resources · checked 8 Oct 2026</span>
+  <h1>CSS and UI component sites worth using</h1>
+  <p class="lede">{{INTRO: which sites, what each card shows, which hooks have copy buttons}}</p>
+  <div class="legend">
+    <span class="tag topt">Top pick for this project</span>
+    <span class="tag ai">Has an AI skill or MCP server</span>
+    <span>GitHub stars and licences come from the GitHub API on the date above.</span>
+  </div>
+</header>
+
+<div class="bar" role="group" aria-label="Filter">
+  <button type="button" id="f-all" data-f="all" aria-pressed="true">All</button>
+  <button type="button" id="f-css" data-f="css" aria-pressed="false">CSS snippets</button>
+  <button type="button" id="f-tw" data-f="tailwind" aria-pressed="false">Tailwind kits</button>
+  <button type="button" id="f-react" data-f="react" aria-pressed="false">React / animated</button>
+  <button type="button" id="f-tools" data-f="tools" aria-pressed="false">Tools &amp; generators</button>
+  <button type="button" id="f-ref" data-f="reference" aria-pressed="false">Reference</button>
+  <button type="button" id="f-ai" data-f="ai" aria-pressed="false">AI skill / MCP</button>
+  <input type="search" id="q" placeholder="Search sites…" aria-label="Search sites">
+</div>
+
+<main class="grid" id="grid"></main>
+<p class="empty" id="empty" hidden>No sites match this filter.</p>
+
+<h2>Dropped, and why</h2>
+<div class="excluded">
+<table>
+  <thead><tr><th>Site</th><th>Reason</th></tr></thead>
+  <tbody>
+    <tr><td>{{DROPPED_SITE}}</td><td>{{REASON}}</td></tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+<script>
+// S: build from references/ui-sources.json after running scripts/check_sources.py.
+// Fields: n name, u url, c css|tailwind|react|tools|reference, top, you (site the user shared), ai (has skill/MCP),
+// d [what it provides], best (best use for THIS project), lic, stack, rtl, stars, h [[label, copyable text]] (verified hooks only)
+const S=[
+ {n:"{{SITE}}",u:"https://example.com",c:"tailwind",top:1,ai:1,d:["{{WHAT_IT_PROVIDES}}"],best:"{{BEST_USE_FOR_THIS_PROJECT}}",lic:"{{LICENCE}}",stack:"{{STACK}}",rtl:"{{RTL}}",stars:"{{STARS}}",
+  h:[["GitHub","https://github.com/owner/repo"],["Agent skill","npx skills add owner/repo"]]}
+];
+const CAT={css:"CSS snippets",tailwind:"Tailwind kit",react:"React / animated",tools:"Tool / generator",reference:"Reference"};
+const grid=document.getElementById('grid');
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function card(s,i){
+  const hooks=s.h.length?`<div class="hooks"><span class="lbl">Developer &amp; AI hooks</span>${s.h.map((h,j)=>`<div class="hook"><span class="k">${esc(h[0])}</span><code id="c${i}_${j}">${esc(h[1])}</code><button type="button" class="copy" data-t="c${i}_${j}" aria-label="Copy ${esc(h[0])} for ${esc(s.n)}">Copy</button></div>`).join('')}</div>`:'';
+  return `<article class="card${s.top?' top':''}"><header>
+    <div class="title"><h3><a href="${s.u}" target="_blank" rel="noopener">${esc(s.n)}</a></h3></div>
+    <span class="url">${esc(s.u)}</span>
+    <div class="tags"><span class="tag">${CAT[s.c]}</span>${s.you?'<span class="tag topt">The site you shared</span>':''}${s.top?'<span class="tag topt">Top pick for this project</span>':''}${s.ai?'<span class="tag ai">AI skill / MCP</span>':''}${s.stars?`<span class="tag">★ ${s.stars}</span>`:''}</div></header>
+    <ul>${s.d.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>
+    <p class="best"><b>Best for:</b> ${esc(s.best)}</p>
+    <dl class="meta"><dt>Licence</dt><dd>${esc(s.lic)}</dd><dt>Stack</dt><dd>${esc(s.stack)}</dd><dt>Arabic / RTL</dt><dd>${esc(s.rtl)}</dd></dl>
+    ${hooks}</article>`;
+}
+let F='all',Q='';
+function render(){
+  const list=S.map((s,i)=>[s,i]).filter(([s])=>(F==='all'||(F==='ai'?s.ai:s.c===F))&&(!Q||(s.n+' '+s.d.join(' ')+' '+s.best).toLowerCase().includes(Q)));
+  grid.innerHTML=list.map(([s,i])=>card(s,i)).join('');
+  document.getElementById('empty').hidden=list.length>0;
+}
+document.querySelectorAll('.bar button').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('.bar button').forEach(x=>x.setAttribute('aria-pressed',x===b));F=b.dataset.f;render();}));
+document.getElementById('q').addEventListener('input',e=>{Q=e.target.value.trim().toLowerCase();render();});
+grid.addEventListener('click',e=>{
+  const b=e.target.closest('.copy'); if(!b) return;
+  const el=document.getElementById(b.dataset.t), txt=el.textContent;
+  const ok=()=>{b.textContent='Copied';b.classList.add('done');setTimeout(()=>{b.textContent='Copy';b.classList.remove('done')},1600)};
+  const fallback=()=>{const r=document.createRange();r.selectNodeContents(el);const s=getSelection();s.removeAllRanges();s.addRange(r);try{document.execCommand('copy')?ok():b.textContent='Press Ctrl+C'}catch(_){b.textContent='Press Ctrl+C'}};
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(ok,fallback)}else fallback();
+});
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,143 @@
+<title>{{SITE_NAME}} Market Research</title>
+<!-- TEMPLATE: replace every {{PLACEHOLDER}}. Duplicate repeated blocks (rows, issues, tiers, phases). Keep the :root tokens and both dark-mode blocks. Publish as an artifact (no doctype) or export with scripts/export_standalone.py. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: one reading column (~74ch) with wide breakout tables and evidence images; issues as stacked dossiers */
+:root{
+  --bg:#f6f7f9; --surface:#ffffff; --ink:#16202b; --muted:#5a6675; --line:#dfe3e9;
+  --accent:#0f5f74; --accent-soft:#e3f0f3;
+  --crit:#b3261e; --crit-soft:#fbe9e7; --high:#a15c00; --high-soft:#fdf0dc; --med:#3c5a99; --med-soft:#e6ecf8; --good:#1e7a46; --good-soft:#e2f3e9;
+  --h1:#c9d6e0; --h2:#e7c9a0; --h3:#f0f2f4;
+  --display:"Sora",ui-sans-serif,system-ui,sans-serif;
+  --body:"Source Sans 3",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10161d; --surface:#18212b; --ink:#e6ebf0; --muted:#9aa7b5; --line:#2a3542;
+  --accent:#5cc3d9; --accent-soft:#16323a;
+  --crit:#ff8a80; --crit-soft:#3a1b1a; --high:#f2b45c; --high-soft:#382a14; --med:#9db6f0; --med-soft:#1c2740; --good:#6fd39b; --good-soft:#153223;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10161d; --surface:#18212b; --ink:#e6ebf0; --muted:#9aa7b5; --line:#2a3542;
+  --accent:#5cc3d9; --accent-soft:#16323a;
+  --crit:#ff8a80; --crit-soft:#3a1b1a; --high:#f2b45c; --high-soft:#382a14; --med:#9db6f0; --med-soft:#1c2740; --good:#6fd39b; --good-soft:#153223;
+  color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:400 17px/1.6 var(--body);padding-inline:20px;padding-block:0 80px}
+.wrap{max-width:1080px;margin:0 auto}
+.col{max-width:74ch}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;line-height:1.2;margin:0}
+h1{font-size:clamp(30px,5vw,46px);font-weight:700;letter-spacing:-.02em}
+h2{font-size:clamp(22px,3vw,28px);font-weight:600;margin-top:64px;padding-top:24px;border-top:1px solid var(--line)}
+h3{font-size:19px;font-weight:600}
+p{margin:0}
+.stack>*+*{margin-top:14px}
+.eyebrow{font:600 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.muted{color:var(--muted)}
+a{color:var(--accent)}
+code,.mono{font-family:var(--mono);font-size:.86em}
+header.top{padding-block:56px 8px;display:grid;gap:16px}
+.lede{font-size:20px;color:var(--muted);max-width:68ch}
+.verdict{display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:22px 24px;margin-top:28px}
+.score{font:700 54px/1 var(--display);color:var(--crit)}
+.score small{font-size:20px;color:var(--muted);font-weight:500}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-top:16px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px 16px}
+.kpi b{display:block;font:600 24px/1.1 var(--display);font-variant-numeric:tabular-nums}
+.kpi span{font-size:14px;color:var(--muted)}
+nav.toc{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px}
+nav.toc a{font:600 13px/1 var(--body);text-decoration:none;color:var(--ink);background:var(--surface);border:1px solid var(--line);padding:9px 12px;border-radius:99px}
+nav.toc a:hover,nav.toc a:focus-visible{border-color:var(--accent);color:var(--accent);outline:none}
+.tablebox{overflow-x:auto;margin-top:20px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:15px;min-width:820px}
+th,td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:600 12px/1.3 var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--muted);background:var(--bg)}
+tbody tr:last-child td{border-bottom:0}
+td.n{text-align:center;font:600 14px var(--mono);font-variant-numeric:tabular-nums}
+.s-hi{background:var(--good-soft);color:var(--good)} .s-mid{background:var(--high-soft);color:var(--high)} .s-lo{background:var(--crit-soft);color:var(--crit)}
+tr.us td{background:var(--accent-soft);font-weight:700}
+tr.us td.n{outline:2px solid var(--accent);outline-offset:-2px}
+.tiers{display:grid;gap:10px;margin-top:18px}
+.tier{display:grid;grid-template-columns:110px 1fr;gap:16px;align-items:baseline;padding:12px 16px;background:var(--surface);border:1px solid var(--line);border-radius:8px}
+.tier b{font:600 13px var(--mono);letter-spacing:.04em}
+.tier.us{border-color:var(--crit);background:var(--crit-soft)}
+.issue{background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--sev);border-radius:8px;padding:20px 22px;margin-top:16px;display:grid;gap:12px}
+.issue.c{--sev:var(--crit)} .issue.h{--sev:var(--high)} .issue.m{--sev:var(--med)}
+.issue header{display:flex;flex-wrap:wrap;gap:10px;align-items:baseline}
+.pill{font:600 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:5px 8px;border-radius:4px;white-space:nowrap}
+.c .pill{background:var(--crit-soft);color:var(--crit)} .h .pill{background:var(--high-soft);color:var(--high)} .m .pill{background:var(--med-soft);color:var(--med)}
+.tag{font:600 11px/1 var(--mono);color:var(--muted);letter-spacing:.06em}
+.rows{display:grid;gap:8px}
+.row{display:grid;grid-template-columns:120px 1fr;gap:14px}
+.row>span:first-child{font:600 12px/1.6 var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding-top:2px}
+.row>div{min-width:0}
+.row.better>span:first-child{color:var(--good)}
+.row.fix>span:first-child{color:var(--accent)}
+figure{margin:0}
+figure img{display:block;width:100%;border:1px solid var(--line);border-radius:6px}
+figcaption{font-size:13px;color:var(--muted);margin-top:6px}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.good{background:var(--good-soft);border:1px solid var(--line);border-radius:10px;padding:20px 22px;margin-top:16px}
+.good ul{margin:10px 0 0;padding-left:20px} .good li+li{margin-top:8px}
+ul.plain{margin:10px 0 0;padding-left:20px} ul.plain li+li{margin-top:6px}
+.road{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-top:20px}
+.phase{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px 20px}
+.phase h3{font-size:17px}
+.phase ul{margin:10px 0 0;padding-left:18px;font-size:15.5px} .phase li+li{margin-top:6px}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--muted);margin-top:10px}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:5px}
+@media (max-width:640px){
+  body{font-size:16px;padding-inline:16px}
+  .verdict{grid-template-columns:1fr}
+  .row{grid-template-columns:1fr;gap:2px}
+  .duo{grid-template-columns:1fr}
+  .tier{grid-template-columns:1fr;gap:4px}
+}
+@media (prefers-reduced-motion:no-preference){nav.toc a{transition:border-color .15s,color .15s}}
+</style>
+<style>.cal td:first-child{white-space:nowrap;font-weight:600} .src{font-size:13px;color:var(--muted)} .src a{overflow-wrap:anywhere}</style>
+<div class="wrap">
+<header class="top">
+  <span class="eyebrow">Research brief · {{DOMAIN}} · {{COUNTRIES}} · {{DATE}}</span>
+  <h1>Who visits {{SITE_NAME}}, what they need, and what the market expects</h1>
+  <p class="lede">{{SUMMARY_OF_KEY_FINDINGS}}</p>
+  <div class="kpis"><div class="kpi"><b>{{FIGURE}}</b><span>{{LABEL}} <span class="src">({{SOURCE}}, {{YEAR}})</span></span></div></div>
+  <nav class="toc" aria-label="Sections"><a href="#needs">Top needs</a><a href="#market">Market profile</a><a href="#calendar">Seasonal calendar</a><a href="#practices">Best practices</a><a href="#trends">Trends</a><a href="#search">Search terms</a><a href="#standards">Standards and law</a><a href="#beyond">Beyond the website</a><a href="#checklist">Audit checklist</a><a href="#sources">Sources</a></nav>
+</header>
+<section id="needs"><h2>What visitors need most (ranked)</h2>
+  <div class="tablebox"><table><thead><tr><th>#</th><th>Need</th><th>Evidence</th><th>What the website must do</th></tr></thead>
+  <tbody><tr><td class="n">1</td><td>{{NEED}}</td><td class="src">{{FINDING}} <a href="{{URL}}">{{SOURCE}}</a>, {{YEAR}}</td><td>{{REQUIREMENT}}</td></tr></tbody></table></div>
+</section>
+<section id="market"><h2>Market profile: {{COUNTRY}}</h2>
+  <!-- Repeat this section per country -->
+  <div class="tablebox"><table><thead><tr><th>Area</th><th>Finding</th><th>Why it matters for the website</th><th>Source</th></tr></thead>
+  <tbody>
+    <tr><td>Population and audience mix</td><td></td><td></td><td class="src"></td></tr>
+    <tr><td>Languages and script</td><td></td><td></td><td class="src"></td></tr>
+    <tr><td>Internet and devices</td><td></td><td></td><td class="src"></td></tr>
+    <tr><td>Social and messaging platforms</td><td></td><td></td><td class="src"></td></tr>
+    <tr><td>Calendar and seasons</td><td></td><td></td><td class="src"></td></tr>
+    <tr><td>Climate and daily rhythm</td><td></td><td></td><td class="src"></td></tr>
+    <tr><td>Payments and commerce</td><td></td><td></td><td class="src"></td></tr>
+    <tr><td>Laws and rules</td><td></td><td></td><td class="src"></td></tr>
+    <tr><td>Maps and getting there</td><td></td><td></td><td class="src"></td></tr>
+    <tr><td>Nearby physical competitors</td><td></td><td></td><td class="src"></td></tr>
+    <tr><td>Tourism and cross-border</td><td></td><td></td><td class="src"></td></tr>
+    <tr><td>Local search behaviour</td><td></td><td></td><td class="src"></td></tr>
+  </tbody></table></div>
+</section>
+<section id="calendar"><h2>Seasonal calendar: next 12 months</h2>
+  <div class="tablebox"><table class="cal"><thead><tr><th>When</th><th>Event or season</th><th>Visitor behaviour</th><th>What the website should do</th></tr></thead>
+  <tbody><tr><td>{{MONTH_DATES}}</td><td>{{EVENT}}</td><td>{{BEHAVIOUR}}</td><td>{{ACTION}}</td></tr></tbody></table></div>
+</section>
+<section id="practices"><h2>Best practices for {{WEBSITE_TYPE}} websites</h2><div class="good"><ul><li>{{PRACTICE}} <span class="src">(<a href="{{URL}}">{{SOURCE}}</a>)</span></li></ul></div></section>
+<section id="trends"><h2>What top sites are adding now</h2><ul class="plain"><li>{{TREND}}, seen at {{SITES}}</li></ul></section>
+<section id="search"><h2>How people search, by language</h2>
+  <div class="tablebox"><table><thead><tr><th>Language</th><th>Terms</th><th>Page that should answer</th><th>Source</th></tr></thead><tbody><tr><td></td><td></td><td></td><td class="src"></td></tr></tbody></table></div>
+</section>
+<section id="standards"><h2>Standards and legal must-haves</h2><ul class="plain"><li>{{STANDARD_OR_LAW}}: {{WHAT_IT_REQUIRES}} <span class="src">({{SOURCE}})</span></li></ul></section>
+<section id="beyond"><h2>Beyond the website</h2><p class="col">{{APP_SOCIAL_REVIEWS_FINDINGS_OR_NOT_ASSESSED}}</p></section>
+<section id="checklist"><h2>Audit checklist from this research</h2><ul class="plain"><li>{{YES_NO_CHECK}}</li></ul></section>
+<section id="sources"><h2>Sources</h2><ol class="plain src"><li><a href="{{URL}}">{{TITLE}}</a>, {{PUBLISHER}}, {{YEAR}}</li></ol><p class="muted" style="margin-top:12px">Figures are the latest found on {{DATE}}. Items marked "estimate" are not official statistics.</p></section>
+</div>

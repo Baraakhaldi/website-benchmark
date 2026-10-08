@@ -1,0 +1,168 @@
+<title>{{SITE_NAME}} Web Benchmark</title>
+<!-- TEMPLATE: replace every {{PLACEHOLDER}}. Duplicate repeated blocks (rows, issues, tiers, phases). Keep the :root tokens and both dark-mode blocks. Publish as an artifact (no doctype) or export with scripts/export_standalone.py. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: one reading column (~74ch) with wide breakout tables and evidence images; issues as stacked dossiers */
+:root{
+  --bg:#f6f7f9; --surface:#ffffff; --ink:#16202b; --muted:#5a6675; --line:#dfe3e9;
+  --accent:#0f5f74; --accent-soft:#e3f0f3;
+  --crit:#b3261e; --crit-soft:#fbe9e7; --high:#a15c00; --high-soft:#fdf0dc; --med:#3c5a99; --med-soft:#e6ecf8; --good:#1e7a46; --good-soft:#e2f3e9;
+  --h1:#c9d6e0; --h2:#e7c9a0; --h3:#f0f2f4;
+  --display:"Sora",ui-sans-serif,system-ui,sans-serif;
+  --body:"Source Sans 3",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10161d; --surface:#18212b; --ink:#e6ebf0; --muted:#9aa7b5; --line:#2a3542;
+  --accent:#5cc3d9; --accent-soft:#16323a;
+  --crit:#ff8a80; --crit-soft:#3a1b1a; --high:#f2b45c; --high-soft:#382a14; --med:#9db6f0; --med-soft:#1c2740; --good:#6fd39b; --good-soft:#153223;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10161d; --surface:#18212b; --ink:#e6ebf0; --muted:#9aa7b5; --line:#2a3542;
+  --accent:#5cc3d9; --accent-soft:#16323a;
+  --crit:#ff8a80; --crit-soft:#3a1b1a; --high:#f2b45c; --high-soft:#382a14; --med:#9db6f0; --med-soft:#1c2740; --good:#6fd39b; --good-soft:#153223;
+  color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:400 17px/1.6 var(--body);padding-inline:20px;padding-block:0 80px}
+.wrap{max-width:1080px;margin:0 auto}
+.col{max-width:74ch}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;line-height:1.2;margin:0}
+h1{font-size:clamp(30px,5vw,46px);font-weight:700;letter-spacing:-.02em}
+h2{font-size:clamp(22px,3vw,28px);font-weight:600;margin-top:64px;padding-top:24px;border-top:1px solid var(--line)}
+h3{font-size:19px;font-weight:600}
+p{margin:0}
+.stack>*+*{margin-top:14px}
+.eyebrow{font:600 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.muted{color:var(--muted)}
+a{color:var(--accent)}
+code,.mono{font-family:var(--mono);font-size:.86em}
+header.top{padding-block:56px 8px;display:grid;gap:16px}
+.lede{font-size:20px;color:var(--muted);max-width:68ch}
+.verdict{display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:22px 24px;margin-top:28px}
+.score{font:700 54px/1 var(--display);color:var(--crit)}
+.score small{font-size:20px;color:var(--muted);font-weight:500}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-top:16px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px 16px}
+.kpi b{display:block;font:600 24px/1.1 var(--display);font-variant-numeric:tabular-nums}
+.kpi span{font-size:14px;color:var(--muted)}
+nav.toc{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px}
+nav.toc a{font:600 13px/1 var(--body);text-decoration:none;color:var(--ink);background:var(--surface);border:1px solid var(--line);padding:9px 12px;border-radius:99px}
+nav.toc a:hover,nav.toc a:focus-visible{border-color:var(--accent);color:var(--accent);outline:none}
+.tablebox{overflow-x:auto;margin-top:20px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:15px;min-width:820px}
+th,td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:600 12px/1.3 var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--muted);background:var(--bg)}
+tbody tr:last-child td{border-bottom:0}
+td.n{text-align:center;font:600 14px var(--mono);font-variant-numeric:tabular-nums}
+.s-hi{background:var(--good-soft);color:var(--good)} .s-mid{background:var(--high-soft);color:var(--high)} .s-lo{background:var(--crit-soft);color:var(--crit)}
+tr.us td{background:var(--accent-soft);font-weight:700}
+tr.us td.n{outline:2px solid var(--accent);outline-offset:-2px}
+.tiers{display:grid;gap:10px;margin-top:18px}
+.tier{display:grid;grid-template-columns:110px 1fr;gap:16px;align-items:baseline;padding:12px 16px;background:var(--surface);border:1px solid var(--line);border-radius:8px}
+.tier b{font:600 13px var(--mono);letter-spacing:.04em}
+.tier.us{border-color:var(--crit);background:var(--crit-soft)}
+.issue{background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--sev);border-radius:8px;padding:20px 22px;margin-top:16px;display:grid;gap:12px}
+.issue.c{--sev:var(--crit)} .issue.h{--sev:var(--high)} .issue.m{--sev:var(--med)}
+.issue header{display:flex;flex-wrap:wrap;gap:10px;align-items:baseline}
+.pill{font:600 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:5px 8px;border-radius:4px;white-space:nowrap}
+.c .pill{background:var(--crit-soft);color:var(--crit)} .h .pill{background:var(--high-soft);color:var(--high)} .m .pill{background:var(--med-soft);color:var(--med)}
+.tag{font:600 11px/1 var(--mono);color:var(--muted);letter-spacing:.06em}
+.rows{display:grid;gap:8px}
+.row{display:grid;grid-template-columns:120px 1fr;gap:14px}
+.row>span:first-child{font:600 12px/1.6 var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding-top:2px}
+.row>div{min-width:0}
+.row.better>span:first-child{color:var(--good)}
+.row.fix>span:first-child{color:var(--accent)}
+figure{margin:0}
+figure img{display:block;width:100%;border:1px solid var(--line);border-radius:6px}
+figcaption{font-size:13px;color:var(--muted);margin-top:6px}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.good{background:var(--good-soft);border:1px solid var(--line);border-radius:10px;padding:20px 22px;margin-top:16px}
+.good ul{margin:10px 0 0;padding-left:20px} .good li+li{margin-top:8px}
+ul.plain{margin:10px 0 0;padding-left:20px} ul.plain li+li{margin-top:6px}
+.road{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-top:20px}
+.phase{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px 20px}
+.phase h3{font-size:17px}
+.phase ul{margin:10px 0 0;padding-left:18px;font-size:15.5px} .phase li+li{margin-top:6px}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--muted);margin-top:10px}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:5px}
+@media (max-width:640px){
+  body{font-size:16px;padding-inline:16px}
+  .verdict{grid-template-columns:1fr}
+  .row{grid-template-columns:1fr;gap:2px}
+  .duo{grid-template-columns:1fr}
+  .tier{grid-template-columns:1fr;gap:4px}
+}
+@media (prefers-reduced-motion:no-preference){nav.toc a{transition:border-color .15s,color .15s}}
+</style>
+<div class="wrap">
+<header class="top">
+  <span class="eyebrow">Website benchmark · {{DOMAIN}} · {{MARKETS}} · {{DATE}}</span>
+  <h1>{{SITE_NAME}} compared with {{N}} of the best {{WEBSITE_TYPE}} websites</h1>
+  <p class="lede">{{ONE_PARAGRAPH_SCOPE}}</p>
+  <div class="verdict">
+    <div class="score">{{SCORE}}<small>/10</small></div>
+    <div class="stack"><p><strong>{{VERDICT_HEADLINE}}</strong> {{VERDICT_DETAIL}}</p><p class="muted">{{BIGGEST_STRENGTH}}</p></div>
+  </div>
+  <div class="kpis">
+    <div class="kpi"><b>{{NUMBER}}</b><span>{{WHAT_IT_MEANS}}</span></div>
+    <!-- 4-5 measured numbers: duplicate titles, missing meta, % images without alt, load time, conflicting facts -->
+  </div>
+  <nav class="toc" aria-label="Sections"><a href="#scores">Scorecard</a><a href="#ranking">Design ranking</a><a href="#critical">Critical issues</a><a href="#design">Visual design</a><a href="#ux">User experience</a><a href="#ui">UI and components</a><a href="#tech">Technical and SEO</a><a href="#listings">How competitors show listings</a><a href="#strengths">What works</a><a href="#roadmap">Roadmap</a><a href="#method">Method</a></nav>
+</header>
+
+<section id="scores">
+  <h2>Scorecard</h2>
+  <p class="col muted" style="margin-top:12px">Scores out of 10, judged on {{DATE}}. Weights: {{WEIGHTS_FROM_RESEARCH}}. A dash means not assessed.</p>
+  <div class="tablebox"><table>
+    <thead><tr><th>Site</th><th>Region</th><th>Visual design</th><th>Listing</th><th>Detail page</th><th>Map / key feature</th><th>Search</th><th>Multi-language</th><th>Tech &amp; SEO</th><th>Local fit</th></tr></thead>
+    <tbody>
+      <tr><td>{{COMPETITOR}}</td><td>{{REGION}}</td><td class="n s-hi">8</td><td class="n s-mid">6</td><td class="n s-lo">4</td><td class="n">–</td><td class="n s-hi">7</td><td class="n s-mid">5</td><td class="n s-hi">8</td><td class="n s-mid">6</td></tr>
+      <tr class="us"><td>{{SITE_NAME}}</td><td>{{REGION}}</td><td class="n s-mid">5</td><td class="n s-lo">4</td><td class="n s-lo">3</td><td class="n s-hi">8</td><td class="n s-lo">3</td><td class="n s-mid">5</td><td class="n s-lo">2</td><td class="n s-mid">5</td></tr>
+    </tbody>
+  </table></div>
+  <div class="legend"><span><i style="background:var(--good-soft);border:1px solid var(--good)"></i>7 and above</span><span><i style="background:var(--high-soft);border:1px solid var(--high)"></i>5–6.5</span><span><i style="background:var(--crit-soft);border:1px solid var(--crit)"></i>4 and below</span></div>
+</section>
+
+<section id="ranking">
+  <h2>Ranking by how modern the design looks</h2>
+  <div class="tiers">
+    <div class="tier"><b>TIER A · 8</b><span>{{SITES}}</span></div>
+    <div class="tier us"><b>{{SITE_NAME_CAPS}} · {{SCORE}}</b><span>{{PEERS_AT_SAME_LEVEL}}</span></div>
+  </div>
+</section>
+
+<section id="critical">
+  <h2>Critical issues</h2>
+  <!-- One article per issue. Classes: "issue c" critical, "issue h" high, "issue m" medium. High/Medium go in #design, #ux, #tech. -->
+  <article class="issue c">
+    <header><span class="pill">Critical</span><h3>{{ISSUE_TITLE}}</h3><span class="tag">{{WHERE_IT_APPEARS}}</span></header>
+    <div class="rows">
+      <div class="row"><span>Problem</span><div>{{WHAT_IS_WRONG_WITH_EVIDENCE}}</div></div>
+      <div class="row"><span>Why it matters</span><div>{{RESEARCH_FINDING_WITH_SOURCE}}</div></div>
+      <div class="row better"><span>Done better</span><div>{{COMPETITOR_AND_HOW}}</div></div>
+      <div class="row fix"><span>Fix</span><div>{{CONCRETE_FIX}}</div></div>
+    </div>
+    <figure><img src="img/{{SCREENSHOT}}.jpg" alt="{{ALT}}" loading="lazy"><figcaption>{{CAPTION}}</figcaption></figure>
+  </article>
+</section>
+<section id="design"><h2>Visual design</h2><!-- issues --></section>
+<section id="ux"><h2>User experience</h2><!-- issues --></section>
+<section id="ui"><h2>UI and components</h2>
+  <div class="tablebox"><table><thead><tr><th>Component</th><th>{{SITE_NAME}} today</th><th>Best example seen</th><th>Change</th></tr></thead>
+  <tbody><tr><td>{{COMPONENT}}</td><td>{{TODAY}}</td><td>{{BEST}}</td><td>{{CHANGE}}</td></tr></tbody></table></div>
+</section>
+<section id="tech"><h2>Technical, performance and accessibility</h2><!-- issues --></section>
+<section id="listings"><h2>How the best competitors present their listings</h2>
+  <div class="tablebox"><table><thead><tr><th>Site</th><th>Cards</th><th>Filters and browsing</th><th>Detail page includes</th><th>Stand-out idea</th></tr></thead>
+  <tbody><tr><td>{{SITE}}</td><td></td><td></td><td></td><td></td></tr></tbody></table></div>
+</section>
+<section id="strengths"><h2>What {{SITE_NAME}} already does well</h2><div class="good"><ul><li><strong>{{STRENGTH}}</strong> {{DETAIL}}</li></ul></div></section>
+<section id="roadmap"><h2>Roadmap</h2><div class="road">
+  <div class="phase"><span class="eyebrow">Week 1 · Quick fixes</span><h3 style="margin-top:8px">Fix visible errors</h3><ul><li>{{TASK}}</li></ul></div>
+  <div class="phase"><span class="eyebrow">Months 1–2 · Core UX</span><h3 style="margin-top:8px">{{THEME}}</h3><ul><li>{{TASK}}</li></ul></div>
+  <div class="phase"><span class="eyebrow">Months 3–6 · Redesign</span><h3 style="margin-top:8px">{{THEME}}</h3><ul><li>{{TASK}}</li></ul></div>
+</div></section>
+<section id="method"><h2>Method and limits</h2><div class="col stack" style="margin-top:12px"><p>{{HOW_IT_WAS_CHECKED}}</p><ul class="plain muted"><li>{{LIMIT}}</li></ul></div></section>
+</div>

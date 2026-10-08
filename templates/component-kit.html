@@ -1,0 +1,151 @@
+<title>{{SITE_NAME}} Component Kit</title>
+<!-- TEMPLATE: replace every {{PLACEHOLDER}}. Duplicate repeated blocks (rows, issues, tiers, phases). Keep the :root tokens and both dark-mode blocks. Publish as an artifact (no doctype) or export with scripts/export_standalone.py. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: summary up top, stack filter, then one block per redesign need, each listing verified picks */
+:root{
+  --bg:#f6f7f9; --surface:#fff; --ink:#16202b; --muted:#5a6675; --line:#dfe3e9;
+  --accent:#0f5f74; --accent-soft:#e3f0f3;
+  --html:#1e6b45; --html-soft:#e2f3e9; --react:#3c5a99; --react-soft:#e6ecf8; --css:#a15c00; --css-soft:#fdf0dc; --warn:#b3261e; --warn-soft:#fbe9e7;
+  --display:"Sora",ui-sans-serif,system-ui,sans-serif;
+  --body:"Source Sans 3",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10161d; --surface:#18212b; --ink:#e6ebf0; --muted:#9aa7b5; --line:#2a3542; --accent:#5cc3d9; --accent-soft:#16323a;
+  --html:#6fd39b; --html-soft:#153223; --react:#9db6f0; --react-soft:#1c2740; --css:#f2b45c; --css-soft:#382a14; --warn:#ff8a80; --warn-soft:#3a1b1a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10161d; --surface:#18212b; --ink:#e6ebf0; --muted:#9aa7b5; --line:#2a3542; --accent:#5cc3d9; --accent-soft:#16323a;
+  --html:#6fd39b; --html-soft:#153223; --react:#9db6f0; --react-soft:#1c2740; --css:#f2b45c; --css-soft:#382a14; --warn:#ff8a80; --warn-soft:#3a1b1a; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:400 16.5px/1.55 var(--body);padding-inline:20px;padding-block:0 80px}
+.wrap{max-width:1040px;margin:0 auto}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;line-height:1.2;margin:0}
+h1{font-size:clamp(28px,4.6vw,42px);letter-spacing:-.02em}
+h2{font-size:24px;margin-top:56px;padding-top:22px;border-top:1px solid var(--line)}
+h3{font-size:18px}
+p{margin:0}
+.eyebrow{font:600 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.muted{color:var(--muted)}
+a{color:var(--accent);overflow-wrap:anywhere}
+code{font-family:var(--mono);font-size:.86em}
+header.top{padding-block:52px 0;display:grid;gap:14px}
+.lede{font-size:19px;color:var(--muted);max-width:70ch}
+.paths{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-top:22px}
+.path{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px 20px;display:grid;gap:8px}
+.path h3{font-size:17px}
+.path ul{margin:0;padding-left:18px} .path li+li{margin-top:4px}
+.chip{display:inline-block;font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;padding:5px 8px;border-radius:4px;white-space:nowrap}
+.k-html{background:var(--html-soft);color:var(--html)} .k-react{background:var(--react-soft);color:var(--react)} .k-css{background:var(--css-soft);color:var(--css)}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:12px;margin-top:34px;border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.bar span{font-size:14px;color:var(--muted);margin-right:4px}
+.bar button{font:600 14px var(--body);color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:99px;padding:8px 14px;cursor:pointer}
+.bar button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.bar button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.need{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px 22px;margin-top:16px;display:grid;gap:12px}
+.need header{display:grid;gap:4px}
+.need .fixes{font-size:14.5px;color:var(--muted)}
+.need .fixes b{color:var(--ink);font-weight:600}
+.picks{display:grid;gap:10px}
+.pick{display:grid;grid-template-columns:82px 1fr;gap:14px;padding-top:10px;border-top:1px dashed var(--line)}
+.pick .body{min-width:0;display:grid;gap:3px}
+.pick .name{font-weight:700}
+.pick .name .site{color:var(--muted);font-weight:600}
+.pick .where{font:400 13px/1.5 var(--mono);color:var(--muted)}
+.pick .note{font-size:15px}
+.pick .lic{font-size:13px;color:var(--muted)}
+.star{color:var(--accent);font-weight:700}
+.gaps{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-top:16px}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px 20px}
+.box.warn{background:var(--warn-soft)}
+.box ul{margin:8px 0 0;padding-left:18px} .box li+li{margin-top:6px}
+.ctx{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+.ctx figure{margin:0}
+.ctx img,.shot img{display:block;width:100%;border:1px solid var(--line);border-radius:6px;background:var(--bg)}
+.ctx figcaption,.shot figcaption{font-size:12.5px;color:var(--muted);margin-top:4px}
+.ref{background:var(--accent-soft);border-radius:8px;padding:12px 14px;font-size:14.5px;display:grid;gap:4px;align-content:start}
+.ref b{font:600 11px/1.4 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.pick{grid-template-columns:240px 1fr}
+.shot{margin:0;display:grid;gap:6px;align-content:start}
+.shot .noimg{border:1px dashed var(--line);border-radius:6px;padding:20px 10px;font-size:13px;color:var(--muted);text-align:center}
+@media (max-width:700px){.ctx{grid-template-columns:1fr}.pick{grid-template-columns:1fr}}
+.empty{margin-top:16px;color:var(--muted)}
+@media (max-width:600px){body{padding-inline:16px}}
+</style>
+
+<div class="wrap">
+<header class="top">
+  <span class="eyebrow">{{SITE_NAME}} redesign · component sourcing · verified {{DATE}}</span>
+  <h1>Ready-made components for each problem in the {{SITE_NAME}} benchmark</h1>
+  <p class="lede">{{INTRO}}</p>
+
+  <div class="paths">
+    <div class="path"><span class="chip k-html">HTML / CMS stack</span><h3>Base: {{HTML_BASE}}</h3><ul><li>{{WHY}}</li></ul></div>
+    <div class="path"><span class="chip k-react">React / Next.js stack</span><h3>Base: {{REACT_BASE}}</h3><ul><li>{{WHY}}</li></ul></div>
+    <div class="path"><span class="chip k-css">Copy-paste CSS</span><h3>Snippets: {{CSS_SOURCES}}</h3><ul><li>{{WHY}}</li></ul></div>
+  </div>
+</header>
+
+<div class="bar" role="group" aria-label="Filter picks by stack">
+  <span>Show picks for</span>
+  <button type="button" id="f-all" data-f="all" aria-pressed="true">All</button>
+  <button type="button" id="f-html" data-f="html" aria-pressed="false">HTML / CMS</button>
+  <button type="button" id="f-react" data-f="react" aria-pressed="false">React</button>
+  <button type="button" id="f-css" data-f="css" aria-pressed="false">Copy-paste CSS</button>
+</div>
+
+<main id="needs"></main>
+<p class="empty" id="empty" hidden>No picks for this stack in this view.</p>
+
+<h2>Still needs custom work</h2>
+<div class="gaps">
+  <div class="box"><h3>Not found in any library</h3><ul><li>{{GAP}}</li></ul></div>
+  <div class="box warn"><h3>Avoid</h3><ul><li>{{GIMMICKY_COMPONENTS}}</li></ul></div>
+  <div class="box"><h3>Licence and RTL notes</h3><ul><li>{{NOTE}}</li></ul></div>
+</div>
+</div>
+
+<script>
+// N: one entry per need. p = picks: [stack "html"|"react"|"css", site, component, "where on the page", url, why/adapt, licence, topPick(1)]
+// Screenshots: img/n{need}_{pick}.jpg (scripts/screenshots.py components). Before shots: before/<file>.
+const N=[
+ {t:"{{NEED_TITLE}}",f:"{{BENCHMARK_ISSUE_IT_FIXES}}",p:[
+  ["css","{{SITE}}","{{COMPONENT}}","{{MENU > PATH > #N}}","https://example.com/component","{{WHY_IT_FITS_AND_WHAT_TO_ADAPT}}","{{LICENCE · PURE CSS or LIGHT JS}}",1],
+  ["html","{{SITE}}","{{COMPONENT}}","{{WHERE}}","https://example.com/component-2","{{WHY}}","{{LICENCE}}"]]}
+];
+const BEFORE={1:["before-1.jpg","{{WHAT_THE_CURRENT_SITE_SHOWS}}"]};
+const REF={1:["{{REFERENCE_SITE}}","{{WHAT_THEY_DO_WELL}}","https://example.com"]};
+const NOSHOT={};
+const label={html:"HTML",react:"React",css:"CSS"};
+const root=document.getElementById('needs');
+function esc(s){return s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function render(f){
+  let shown=0;
+  root.innerHTML=N.map((n,i)=>{
+    const ps=n.p.filter(p=>f==='all'||p[0]===f);
+    if(!ps.length) return '';
+    shown++;
+    const bf=BEFORE[i+1], rf=REF[i+1];
+    const ctx=`<div class="ctx">${bf?`<figure><img src="before/${bf[0]}" alt="${esc(bf[1])}" loading="lazy"><figcaption><b>{{SITE_NAME}} today:</b> ${esc(bf[1])}</figcaption></figure>`:''}${rf?`<div class="ref"><b>Reference · who does it well</b><span><strong>${esc(rf[0])}:</strong> ${esc(rf[1])}</span>${rf[2]?`<a href="${rf[2]}" target="_blank" rel="noopener">${esc(rf[2])}</a>`:''}</div>`:''}</div>`;
+    return `<section class="need" id="need-${i+1}"><header><h3>${esc(n.t)}</h3><p class="fixes"><b>Fixes:</b> ${esc(n.f)}</p></header>${ctx}<div class="picks">`+
+      ps.map(p=>{const j=n.p.indexOf(p)+1, key=`n${i+1}_${j}`;
+        const shot=NOSHOT[key]?`<div class="noimg">${esc(NOSHOT[key])}</div>`:`<a href="${p[4]}" target="_blank" rel="noopener"><img src="img/${key}.jpg" alt="Screenshot of ${esc(p[1])} ${esc(p[2])}" loading="lazy"></a>`;
+        return `<div class="pick"><figure class="shot">${shot}<figcaption><span class="chip k-${p[0]}">${label[p[0]]}</span></figcaption></figure><div class="body">
+        <span class="name">${p[7]?'<span class="star">★ Top pick · </span>':''}<span class="site">${esc(p[1])} ·</span> ${esc(p[2])}</span>
+        <span class="where">Where: ${esc(p[3])}</span>
+        <a href="${p[4]}" target="_blank" rel="noopener">${esc(p[4])}</a>
+        <span class="note">${esc(p[5])}</span>
+        <span class="lic">${esc(p[6])}</span></div></div>`}).join('')+`</div></section>`;
+  }).join('');
+  document.getElementById('empty').hidden=shown>0;
+}
+document.querySelectorAll('.bar button').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('.bar button').forEach(x=>x.setAttribute('aria-pressed',x===b));
+  render(b.dataset.f);
+  try{localStorage.setItem('kitFilter',b.dataset.f)}catch(e){}
+}));
+let start='all';try{start=localStorage.getItem('kitFilter')||'all'}catch(e){}
+const sb=document.querySelector(`.bar button[data-f="${start}"]`)||document.getElementById('f-all');
+sb.click();
+</script>
